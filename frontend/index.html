@@ -1,0 +1,1005 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VQML Benchmark — Variational Quantum Machine Learning Dashboard</title>
+    <meta name="description"
+        content="Interactive dashboard showcasing 5 Variational Quantum Machine Learning algorithms for binary MNIST digit classification (2 vs 7) using PCA and PennyLane quantum circuits on simulated NISQ devices.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <!-- Quantum Particle Canvas Background -->
+    <canvas id="quantum-canvas"></canvas>
+
+    <!-- Navigation -->
+    <nav id="main-nav">
+        <div class="nav-logo">
+            <span class="logo-icon">⟨ψ|</span>
+            <span class="logo-text">VQML</span>
+        </div>
+        <ul class="nav-links">
+            <li><a href="#hero">Home</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#how-it-works">How It Works</a></li>
+            <li><a href="#algorithms">Algorithms</a></li>
+            <li><a href="#performance">Performance</a></li>
+            <li><a href="#results">Results</a></li>
+            <li><a href="#findings">Findings</a></li>
+            <li><a href="#predictions">Predictions</a></li>
+            <li><a href="#demo">Demo</a></li>
+            <li><a href="#glossary">Glossary</a></li>
+        </ul>
+        <button class="nav-toggle" id="nav-toggle" aria-label="Toggle navigation">
+            <span></span><span></span><span></span>
+        </button>
+    </nav>
+
+    <!-- ============================== HERO ============================== -->
+    <section id="hero">
+        <div class="hero-content">
+            <div class="hero-badge">Research Benchmark • NISQ Devices</div>
+            <h1>
+                <span class="hero-line">Variational Quantum</span>
+                <span class="hero-line accent">Machine Learning</span>
+            </h1>
+            <p class="hero-subtitle">
+                Benchmarking 5 quantum algorithms for binary MNIST classification (Digit 2 vs 7)
+                using PCA feature reduction &amp; PennyLane quantum circuits on simulated NISQ hardware.
+            </p>
+            <div class="hero-stats">
+                <div class="stat-pill">
+                    <span class="stat-number">5</span>
+                    <span class="stat-label">Algorithms</span>
+                </div>
+                <div class="stat-pill">
+                    <span class="stat-number">4</span>
+                    <span class="stat-label">Qubits</span>
+                </div>
+                <div class="stat-pill">
+                    <span class="stat-number">1000</span>
+                    <span class="stat-label">Train Samples</span>
+                </div>
+                <div class="stat-pill">
+                    <span class="stat-number">250</span>
+                    <span class="stat-label">Test Samples</span>
+                </div>
+            </div>
+            <a href="#about" class="hero-cta">Explore Dashboard <span class="arrow">↓</span></a>
+        </div>
+    </section>
+
+    <!-- ============================== ABOUT THIS RESEARCH ============================== -->
+    <section id="about" class="section">
+        <div class="container">
+            <h2 class="section-title anim-slide-up">About This Research</h2>
+            <p class="section-desc anim-slide-up">
+                Understanding what this project is, why it matters, and what problems it solves.
+            </p>
+
+            <div class="about-layout anim-slide-up">
+                <div class="about-text">
+                    <div class="about-block">
+                        <h3>What Is This Project?</h3>
+                        <p>This project benchmarks <strong>five Variational Quantum Machine Learning (VQML) algorithms</strong>
+                            on the task of classifying handwritten digits from the famous MNIST dataset. Specifically, we
+                            classify <strong>digit "2" versus digit "7"</strong> — a binary classification problem — using
+                            quantum circuits simulated on classical hardware.</p>
+                    </div>
+                    <div class="about-block">
+                        <h3>Why Quantum Machine Learning?</h3>
+                        <p>Classical machine learning has reached remarkable performance, but quantum computers promise
+                            <strong>exponential speedups</strong> for certain problems by exploiting quantum phenomena like
+                            <strong>superposition</strong> and <strong>entanglement</strong>. This project explores whether
+                            today's noisy, small-scale quantum devices (called <strong>NISQ devices</strong>) can already
+                            perform useful classification tasks.</p>
+                    </div>
+                    <div class="about-block">
+                        <h3>What Are NISQ Devices?</h3>
+                        <p><strong>NISQ</strong> stands for <em>Noisy Intermediate-Scale Quantum</em> — referring to current
+                            quantum computers with 50–1000 qubits that are prone to errors. Rather than waiting for
+                            fault-tolerant quantum computers, <strong>variational algorithms</strong> are designed to work
+                            <em>within</em> these limitations by combining quantum circuits with classical optimization.</p>
+                    </div>
+                </div>
+
+                <div class="about-highlights">
+                    <div class="highlight-card">
+                        <div class="highlight-icon">01</div>
+                        <h4>Binary Classification</h4>
+                        <p>Classifying digit 2 vs 7 from the MNIST dataset — a well-understood benchmark problem.</p>
+                    </div>
+                    <div class="highlight-card">
+                        <div class="highlight-icon">02</div>
+                        <h4>Hybrid Approach</h4>
+                        <p>Quantum circuits process data while a classical optimizer (Adam) tunes the circuit parameters.</p>
+                    </div>
+                    <div class="highlight-card">
+                        <div class="highlight-icon">03</div>
+                        <h4>5 Algorithms Compared</h4>
+                        <p>QNN, QCNN, VQC, VQFE, and QSVM — each with unique quantum circuit architectures.</p>
+                    </div>
+                    <div class="highlight-card">
+                        <div class="highlight-icon">04</div>
+                        <h4>Practical Evaluation</h4>
+                        <p>Measured with Accuracy, Precision, Recall, and F1-Score for real-world relevance.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================== HOW IT WORKS ============================== -->
+    <section id="how-it-works" class="section">
+        <div class="container">
+            <h2 class="section-title anim-slide-up">How It Works</h2>
+            <p class="section-desc anim-slide-up">
+                A step-by-step walkthrough of the complete pipeline — from raw image to quantum classification.
+            </p>
+
+            <div class="hiw-timeline anim-slide-up">
+                <div class="hiw-step">
+                    <div class="hiw-number">1</div>
+                    <div class="hiw-content">
+                        <h3>Load MNIST Dataset</h3>
+                        <p>Download the MNIST dataset containing 70,000 handwritten digits (28×28 grayscale images). We only
+                            keep <strong>digits 2 and 7</strong> for binary classification.</p>
+                        <div class="hiw-detail">
+                            <span class="hiw-tag">Input</span>
+                            <span>28 × 28 pixel images = 784 features per image</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="hiw-step">
+                    <div class="hiw-number">2</div>
+                    <div class="hiw-content">
+                        <h3>Filter & Relabel</h3>
+                        <p>Filter out all digits except 2 and 7. Relabel them: <strong>Digit 2 → Class 0</strong>,
+                            <strong>Digit 7 → Class 1</strong>. This turns it into a clean binary classification problem.</p>
+                        <div class="hiw-detail">
+                            <span class="hiw-tag">Transform</span>
+                            <span>Multi-class → Binary (0 or 1)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="hiw-step">
+                    <div class="hiw-number">3</div>
+                    <div class="hiw-content">
+                        <h3>PCA Dimensionality Reduction</h3>
+                        <p>Quantum computers can only handle a few qubits. <strong>PCA (Principal Component Analysis)</strong>
+                            compresses each 784-dimensional image down to just <strong>4 principal components</strong>,
+                            retaining the most important patterns while fitting our 4-qubit circuit.</p>
+                        <div class="hiw-detail">
+                            <span class="hiw-tag">Reduction</span>
+                            <span>784 dimensions → 4 components (~50% variance retained)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="hiw-step">
+                    <div class="hiw-number">4</div>
+                    <div class="hiw-content">
+                        <h3>Angle Encoding</h3>
+                        <p>The 4 PCA components are normalized to the range <strong>[0, π]</strong> and used as rotation
+                            angles to encode classical data into quantum states. Each component maps to one qubit via an
+                            <strong>RX rotation gate</strong>.</p>
+                        <div class="hiw-detail">
+                            <span class="hiw-tag">Encoding</span>
+                            <span>4 values → 4 qubit rotation angles</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="hiw-step highlight-step">
+                    <div class="hiw-number">5</div>
+                    <div class="hiw-content">
+                        <h3>Quantum Circuit Processing</h3>
+                        <p>This is the heart of the algorithm. A <strong>variational quantum circuit</strong> with trainable
+                            parameters processes the encoded data. Each algorithm uses a different circuit architecture
+                            (different gates, entanglement patterns, and layer structures).</p>
+                        <div class="hiw-detail">
+                            <span class="hiw-tag">Core</span>
+                            <span>Parameterized quantum gates manipulate qubit states</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="hiw-step">
+                    <div class="hiw-number">6</div>
+                    <div class="hiw-content">
+                        <h3>PauliZ Measurement</h3>
+                        <p>The quantum circuit's output is measured using the <strong>Pauli-Z operator</strong> on qubit 0.
+                            This gives a value between <strong>-1 and +1</strong>. If the value is greater than 0, we predict
+                            class 1 (digit 7); otherwise, class 0 (digit 2).</p>
+                        <div class="hiw-detail">
+                            <span class="hiw-tag">Output</span>
+                            <span>⟨Z₀⟩ → +1 (Digit 7) or -1 (Digit 2)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="hiw-step">
+                    <div class="hiw-number">7</div>
+                    <div class="hiw-content">
+                        <h3>Classical Optimization</h3>
+                        <p>The quantum circuit parameters are updated by a <strong>classical Adam optimizer</strong> using
+                            PyTorch's autograd. The loss function is <strong>Mean Squared Error</strong> between the circuit
+                            output and the target labels (±1). This hybrid quantum-classical loop repeats for 20 epochs.</p>
+                        <div class="hiw-detail">
+                            <span class="hiw-tag">Training</span>
+                            <span>20 epochs × 1,000 samples, Adam optimizer (lr=0.1)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================== ALGORITHMS ============================== -->
+    <section id="algorithms" class="section">
+        <div class="container">
+            <h2 class="section-title anim-slide-up">Algorithm Explorer</h2>
+            <p class="section-desc anim-slide-up">
+                Click any card to explore the quantum circuit architecture, gate operations, and key specifications.
+            </p>
+
+            <div class="algo-grid" id="algo-grid">
+                <!-- QNN -->
+                <div class="algo-card anim-slide-up" data-algo="qnn">
+                    <div class="algo-header">
+                        <div class="algo-tag">Parametric</div>
+                        <h3>QNN</h3>
+                        <p class="algo-full-name">Quantum Neural Network</p>
+                    </div>
+                    <div class="algo-circuit" id="circuit-qnn"></div>
+                    <div class="algo-specs">
+                        <div class="spec"><span class="spec-label">Encoding</span><span
+                                class="spec-value">AngleEmbedding</span></div>
+                        <div class="spec"><span class="spec-label">Variational</span><span
+                                class="spec-value">BasicEntanglerLayers</span></div>
+                        <div class="spec"><span class="spec-label">Layers</span><span class="spec-value">3</span></div>
+                        <div class="spec"><span class="spec-label">Measurement</span><span
+                                class="spec-value">⟨Z₀⟩</span></div>
+                    </div>
+                    <div class="algo-details">
+                        <p>The simplest variational approach. Uses <strong>AngleEmbedding</strong> (RX rotations per
+                            qubit) followed by 3 layers of <strong>BasicEntanglerLayers</strong> — parameterized
+                            single-qubit rotations and nearest-neighbor CNOTs. Output is the expectation value of PauliZ
+                            on qubit 0.</p>
+                        <div class="algo-code">
+                            <pre><code>@qml.qnode(dev)
+def circuit(inputs, weights):
+    qml.AngleEmbedding(inputs, wires=range(4))
+    qml.BasicEntanglerLayers(weights, wires=range(4))
+    return qml.expval(qml.PauliZ(0))</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- QCNN -->
+                <div class="algo-card anim-slide-up" data-algo="qcnn">
+                    <div class="algo-header">
+                        <div class="algo-tag">Convolutional</div>
+                        <h3>QCNN</h3>
+                        <p class="algo-full-name">Quantum Convolutional Neural Network</p>
+                    </div>
+                    <div class="algo-circuit" id="circuit-qcnn"></div>
+                    <div class="algo-specs">
+                        <div class="spec"><span class="spec-label">Encoding</span><span
+                                class="spec-value">AngleEmbedding</span></div>
+                        <div class="spec"><span class="spec-label">Conv</span><span class="spec-value">RX/RY +
+                                CNOT</span></div>
+                        <div class="spec"><span class="spec-label">Pooling</span><span class="spec-value">Rot
+                                Gate</span></div>
+                        <div class="spec"><span class="spec-label">Measurement</span><span
+                                class="spec-value">⟨Z₀⟩</span></div>
+                    </div>
+                    <div class="algo-details">
+                        <p>Mimics classical CNNs with <strong>conv-like layers</strong> (pairs of RX/RY gates + CNOT
+                            entangling) and a <strong>pooling-like layer</strong> (Rot gate on qubit 0). Reduces feature
+                            information hierarchically like spatial pooling.</p>
+                        <div class="algo-code">
+                            <pre><code>@qml.qnode(dev)
+def circuit(inputs, weights):
+    qml.AngleEmbedding(inputs, wires=range(4))
+    for i in range(0, 4, 2):
+        qml.RX(weights[0][0], wires=i)
+        qml.RY(weights[0][1], wires=i+1)
+        qml.CNOT(wires=[i, i+1])
+    qml.Rot(*weights[1], wires=0)
+    return qml.expval(qml.PauliZ(0))</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- VQC -->
+                <div class="algo-card anim-slide-up" data-algo="vqc">
+                    <div class="algo-header">
+                        <div class="algo-tag">Expressive</div>
+                        <h3>VQC</h3>
+                        <p class="algo-full-name">Variational Quantum Classifier</p>
+                    </div>
+                    <div class="algo-circuit" id="circuit-vqc"></div>
+                    <div class="algo-specs">
+                        <div class="spec"><span class="spec-label">Encoding</span><span
+                                class="spec-value">AngleEmbedding</span></div>
+                        <div class="spec"><span class="spec-label">Variational</span><span
+                                class="spec-value">StronglyEntanglingLayers</span></div>
+                        <div class="spec"><span class="spec-label">Layers</span><span class="spec-value">3</span></div>
+                        <div class="spec"><span class="spec-label">Measurement</span><span
+                                class="spec-value">⟨Z₀⟩</span></div>
+                    </div>
+                    <div class="algo-details">
+                        <p>The most expressive variational ansatz. Uses <strong>StronglyEntanglingLayers</strong> with 3
+                            rotation parameters per qubit per layer (Rot gates) and long-range CNOT entanglement
+                            patterns for maximal expressivity.</p>
+                        <div class="algo-code">
+                            <pre><code>@qml.qnode(dev)
+def circuit(inputs, weights):
+    qml.AngleEmbedding(inputs, wires=range(4))
+    qml.StronglyEntanglingLayers(weights, wires=range(4))
+    return qml.expval(qml.PauliZ(0))</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- VQFE -->
+                <div class="algo-card anim-slide-up" data-algo="vqfe">
+                    <div class="algo-header">
+                        <div class="algo-tag">Adaptive</div>
+                        <h3>VQFE</h3>
+                        <p class="algo-full-name">Variational Quantum Feature Embedding</p>
+                    </div>
+                    <div class="algo-circuit" id="circuit-vqfe"></div>
+                    <div class="algo-specs">
+                        <div class="spec"><span class="spec-label">Encoding</span><span class="spec-value">Trainable
+                                RY</span></div>
+                        <div class="spec"><span class="spec-label">Variational</span><span
+                                class="spec-value">BasicEntanglerLayers</span></div>
+                        <div class="spec"><span class="spec-label">Layers</span><span class="spec-value">3</span></div>
+                        <div class="spec"><span class="spec-label">Measurement</span><span
+                                class="spec-value">⟨Z₀⟩</span></div>
+                    </div>
+                    <div class="algo-details">
+                        <p>Unique approach with <strong>trainable feature embedding</strong> — RY rotations with
+                            learnable scaling weights that adapt encoding per qubit. Followed by 3 layers of
+                            BasicEntanglerLayers for processing.</p>
+                        <div class="algo-code">
+                            <pre><code>@qml.qnode(dev)
+def circuit(inputs, weights):
+    for i in range(4):
+        qml.RY(inputs[i] * weights[0][i], wires=i)
+    qml.BasicEntanglerLayers(weights[1:], wires=range(4))
+    return qml.expval(qml.PauliZ(0))</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- QSVM -->
+                <div class="algo-card anim-slide-up" data-algo="qsvm">
+                    <div class="algo-header">
+                        <div class="algo-tag">Kernel</div>
+                        <h3>QSVM</h3>
+                        <p class="algo-full-name">Quantum Support Vector Machine</p>
+                    </div>
+                    <div class="algo-circuit" id="circuit-qsvm"></div>
+                    <div class="algo-specs">
+                        <div class="spec"><span class="spec-label">Method</span><span class="spec-value">Fidelity
+                                Kernel</span></div>
+                        <div class="spec"><span class="spec-label">Classifier</span><span class="spec-value">Classical
+                                SVC</span></div>
+                        <div class="spec"><span class="spec-label">Train Sub</span><span class="spec-value">40
+                                samples</span></div>
+                        <div class="spec"><span class="spec-label">Complexity</span><span
+                                class="spec-value">O(n²)</span></div>
+                    </div>
+                    <div class="algo-details">
+                        <p>Kernel-based approach: computes a <strong>quantum fidelity kernel</strong> |⟨φ(x₁)|φ(x₂)⟩|²
+                            using AngleEmbedding + adjoint. The kernel matrix feeds a classical SVC. Uses smaller
+                            subsets due to O(n²) kernel computation.</p>
+                        <div class="algo-code">
+                            <pre><code>@qml.qnode(dev)
+def kernel_circuit(x1, x2):
+    qml.AngleEmbedding(x1, wires=range(4))
+    qml.adjoint(qml.AngleEmbedding)(x2, wires=range(4))
+    return qml.probs(wires=range(4))</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================== ALGORITHM PERFORMANCE BREAKDOWN ============================== -->
+    <section id="performance" class="section">
+        <div class="container">
+            <h2 class="section-title anim-slide-up">Algorithm Performance Breakdown</h2>
+            <p class="section-desc anim-slide-up">
+                Detailed per-algorithm metrics showing how each quantum algorithm performs on the classification task.
+            </p>
+
+            <div class="perf-grid" id="perf-grid">
+                <!-- QNN Card -->
+                <div class="perf-card anim-slide-up" data-algo="qnn">
+                    <div class="perf-card-header">
+                        <h3>QNN</h3>
+                        <span class="perf-card-tag">Quantum Neural Network</span>
+                    </div>
+                    <div class="perf-rings">
+                        <div class="ring-item" data-value="53" data-color="#5b7fa6">
+                            <svg viewBox="0 0 100 100" class="ring-svg">
+                                <circle cx="50" cy="50" r="42" class="ring-bg" />
+                                <circle cx="50" cy="50" r="42" class="ring-fg" data-value="53" />
+                            </svg>
+                            <div class="ring-label"><span class="ring-value">52.8%</span><span class="ring-metric">Accuracy</span></div>
+                        </div>
+                        <div class="ring-item" data-value="53" data-color="#8e7ab5">
+                            <svg viewBox="0 0 100 100" class="ring-svg">
+                                <circle cx="50" cy="50" r="42" class="ring-bg" />
+                                <circle cx="50" cy="50" r="42" class="ring-fg" data-value="53" />
+                            </svg>
+                            <div class="ring-label"><span class="ring-value">52.8%</span><span class="ring-metric">Precision</span></div>
+                        </div>
+                        <div class="ring-item" data-value="100" data-color="#c47a8e">
+                            <svg viewBox="0 0 100 100" class="ring-svg">
+                                <circle cx="50" cy="50" r="42" class="ring-bg" />
+                                <circle cx="50" cy="50" r="42" class="ring-fg" data-value="100" />
+                            </svg>
+                            <div class="ring-label"><span class="ring-value">100%</span><span class="ring-metric">Recall</span></div>
+                        </div>
+                        <div class="ring-item" data-value="69" data-color="#6aab8e">
+                            <svg viewBox="0 0 100 100" class="ring-svg">
+                                <circle cx="50" cy="50" r="42" class="ring-bg" />
+                                <circle cx="50" cy="50" r="42" class="ring-fg" data-value="69" />
+                            </svg>
+                            <div class="ring-label"><span class="ring-value">69.1%</span><span class="ring-metric">F1-Score</span></div>
+                        </div>
+                    </div>
+                    <div class="perf-interpretation">
+                        <p>QNN predicts <strong>all samples as class 1</strong> (digit 7), resulting in perfect recall but poor precision and near-random accuracy. The simplest architecture struggles to learn meaningful decision boundaries.</p>
+                    </div>
+                </div>
+
+                <!-- QCNN Card -->
+                <div class="perf-card anim-slide-up" data-algo="qcnn">
+                    <div class="perf-card-header">
+                        <h3>QCNN</h3>
+                        <span class="perf-card-tag">Quantum Convolutional Neural Network</span>
+                    </div>
+                    <div class="perf-rings">
+                        <div class="ring-item" data-value="96" data-color="#5b7fa6">
+                            <svg viewBox="0 0 100 100" class="ring-svg">
+                                <circle cx="50" cy="50" r="42" class="ring-bg" />
+                                <circle cx="50" cy="50" r="42" class="ring-fg" data-value="96" />
+                            </svg>
+                            <div class="ring-label"><span class="ring-value">96.4%</span><span class="ring-metric">Accuracy</span></div>
+                        </div>
+                        <div class="ring-item" data-value="94" data-color="#8e7ab5">
+                            <svg viewBox="0 0 100 100" class="ring-svg">
+                                <circle cx="50" cy="50" r="42" class="ring-bg" />
+                                <circle cx="50" cy="50" r="42" class="ring-fg" data-value="94" />
+                            </svg>
+                            <div class="ring-label"><span class="ring-value">94.2%</span><span class="ring-metric">Precision</span></div>
+                        </div>
+                        <div class="ring-item" data-value="99" data-color="#c47a8e">
+                            <svg viewBox="0 0 100 100" class="ring-svg">
+                                <circle cx="50" cy="50" r="42" class="ring-bg" />
+                                <circle cx="50" cy="50" r="42" class="ring-fg" data-value="99" />
+                            </svg>
+                            <div class="ring-label"><span class="ring-value">99.2%</span><span class="ring-metric">Recall</span></div>
+                        </div>
+                        <div class="ring-item" data-value="97" data-color="#6aab8e">
+                            <svg viewBox="0 0 100 100" class="ring-svg">
+                                <circle cx="50" cy="50" r="42" class="ring-bg" />
+                                <circle cx="50" cy="50" r="42" class="ring-fg" data-value="97" />
+                            </svg>
+                            <div class="ring-label"><span class="ring-value">96.6%</span><span class="ring-metric">F1-Score</span></div>
+                        </div>
+                    </div>
+                    <div class="perf-interpretation">
+                        <p>QCNN achieves <strong>90% accuracy</strong> with well-balanced metrics. The convolutional structure hierarchically processes features, similar to how classical CNNs excel at image tasks. A <strong>top performer</strong>.</p>
+                    </div>
+                </div>
+
+                <!-- VQC Card -->
+                <div class="perf-card anim-slide-up best-performer" data-algo="vqc">
+                    <div class="perf-card-header">
+                        <h3>VQC<span class="best-badge">Best Overall</span></h3>
+                        <span class="perf-card-tag">Variational Quantum Classifier</span>
+                    </div>
+                    <div class="perf-rings">
+                        <div class="ring-item" data-value="96" data-color="#5b7fa6">
+                            <svg viewBox="0 0 100 100" class="ring-svg">
+                                <circle cx="50" cy="50" r="42" class="ring-bg" />
+                                <circle cx="50" cy="50" r="42" class="ring-fg" data-value="96" />
+                            </svg>
+                            <div class="ring-label"><span class="ring-value">96.4%</span><span class="ring-metric">Accuracy</span></div>
+                        </div>
+                        <div class="ring-item" data-value="94" data-color="#8e7ab5">
+                            <svg viewBox="0 0 100 100" class="ring-svg">
+                                <circle cx="50" cy="50" r="42" class="ring-bg" />
+                                <circle cx="50" cy="50" r="42" class="ring-fg" data-value="94" />
+                            </svg>
+                            <div class="ring-label"><span class="ring-value">94.2%</span><span class="ring-metric">Precision</span></div>
+                        </div>
+                        <div class="ring-item" data-value="99" data-color="#c47a8e">
+                            <svg viewBox="0 0 100 100" class="ring-svg">
+                                <circle cx="50" cy="50" r="42" class="ring-bg" />
+                                <circle cx="50" cy="50" r="42" class="ring-fg" data-value="99" />
+                            </svg>
+                            <div class="ring-label"><span class="ring-value">99.2%</span><span class="ring-metric">Recall</span></div>
+                        </div>
+                        <div class="ring-item" data-value="97" data-color="#6aab8e">
+                            <svg viewBox="0 0 100 100" class="ring-svg">
+                                <circle cx="50" cy="50" r="42" class="ring-bg" />
+                                <circle cx="50" cy="50" r="42" class="ring-fg" data-value="97" />
+                            </svg>
+                            <div class="ring-label"><span class="ring-value">96.6%</span><span class="ring-metric">F1-Score</span></div>
+                        </div>
+                    </div>
+                    <div class="perf-interpretation">
+                        <p>VQC achieves the <strong>highest F1-Score (91%)</strong> and the best overall balance. StronglyEntanglingLayers provide maximum circuit expressivity with long-range entanglement, enabling it to capture complex patterns.</p>
+                    </div>
+                </div>
+
+                <!-- VQFE Card -->
+                <div class="perf-card anim-slide-up" data-algo="vqfe">
+                    <div class="perf-card-header">
+                        <h3>VQFE</h3>
+                        <span class="perf-card-tag">Variational Quantum Feature Embedding</span>
+                    </div>
+                    <div class="perf-rings">
+                        <div class="ring-item" data-value="58" data-color="#5b7fa6">
+                            <svg viewBox="0 0 100 100" class="ring-svg">
+                                <circle cx="50" cy="50" r="42" class="ring-bg" />
+                                <circle cx="50" cy="50" r="42" class="ring-fg" data-value="58" />
+                            </svg>
+                            <div class="ring-label"><span class="ring-value">57.6%</span><span class="ring-metric">Accuracy</span></div>
+                        </div>
+                        <div class="ring-item" data-value="59" data-color="#8e7ab5">
+                            <svg viewBox="0 0 100 100" class="ring-svg">
+                                <circle cx="50" cy="50" r="42" class="ring-bg" />
+                                <circle cx="50" cy="50" r="42" class="ring-fg" data-value="59" />
+                            </svg>
+                            <div class="ring-label"><span class="ring-value">59.1%</span><span class="ring-metric">Precision</span></div>
+                        </div>
+                        <div class="ring-item" data-value="64" data-color="#c47a8e">
+                            <svg viewBox="0 0 100 100" class="ring-svg">
+                                <circle cx="50" cy="50" r="42" class="ring-bg" />
+                                <circle cx="50" cy="50" r="42" class="ring-fg" data-value="64" />
+                            </svg>
+                            <div class="ring-label"><span class="ring-value">63.6%</span><span class="ring-metric">Recall</span></div>
+                        </div>
+                        <div class="ring-item" data-value="61" data-color="#6aab8e">
+                            <svg viewBox="0 0 100 100" class="ring-svg">
+                                <circle cx="50" cy="50" r="42" class="ring-bg" />
+                                <circle cx="50" cy="50" r="42" class="ring-fg" data-value="61" />
+                            </svg>
+                            <div class="ring-label"><span class="ring-value">61.3%</span><span class="ring-metric">F1-Score</span></div>
+                        </div>
+                    </div>
+                    <div class="perf-interpretation">
+                        <p>VQFE has <strong>high recall (95%)</strong> but struggles with precision. The trainable feature embedding adds flexibility but may also introduce noise. It tends to over-predict class 1 (digit 7).</p>
+                    </div>
+                </div>
+
+                <!-- QSVM Card -->
+                <div class="perf-card anim-slide-up" data-algo="qsvm">
+                    <div class="perf-card-header">
+                        <h3>QSVM</h3>
+                        <span class="perf-card-tag">Quantum Support Vector Machine</span>
+                    </div>
+                    <div class="perf-rings">
+                        <div class="ring-item" data-value="90" data-color="#5b7fa6">
+                            <svg viewBox="0 0 100 100" class="ring-svg">
+                                <circle cx="50" cy="50" r="42" class="ring-bg" />
+                                <circle cx="50" cy="50" r="42" class="ring-fg" data-value="90" />
+                            </svg>
+                            <div class="ring-label"><span class="ring-value">90.0%</span><span class="ring-metric">Accuracy</span></div>
+                        </div>
+                        <div class="ring-item" data-value="93" data-color="#8e7ab5">
+                            <svg viewBox="0 0 100 100" class="ring-svg">
+                                <circle cx="50" cy="50" r="42" class="ring-bg" />
+                                <circle cx="50" cy="50" r="42" class="ring-fg" data-value="93" />
+                            </svg>
+                            <div class="ring-label"><span class="ring-value">92.8%</span><span class="ring-metric">Precision</span></div>
+                        </div>
+                        <div class="ring-item" data-value="93" data-color="#c47a8e">
+                            <svg viewBox="0 0 100 100" class="ring-svg">
+                                <circle cx="50" cy="50" r="42" class="ring-bg" />
+                                <circle cx="50" cy="50" r="42" class="ring-fg" data-value="93" />
+                            </svg>
+                            <div class="ring-label"><span class="ring-value">92.8%</span><span class="ring-metric">Recall</span></div>
+                        </div>
+                        <div class="ring-item" data-value="93" data-color="#6aab8e">
+                            <svg viewBox="0 0 100 100" class="ring-svg">
+                                <circle cx="50" cy="50" r="42" class="ring-bg" />
+                                <circle cx="50" cy="50" r="42" class="ring-fg" data-value="93" />
+                            </svg>
+                            <div class="ring-label"><span class="ring-value">92.8%</span><span class="ring-metric">F1-Score</span></div>
+                        </div>
+                    </div>
+                    <div class="perf-interpretation">
+                        <p>QSVM takes a fundamentally different approach using a <strong>quantum kernel</strong> with a classical SVM classifier. Limited by its small training subset (40 samples) due to O(n²) kernel computation complexity.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================== RESULTS ============================== -->
+    <section id="results" class="section">
+        <div class="container">
+            <h2 class="section-title anim-slide-up">Performance Dashboard</h2>
+            <p class="section-desc anim-slide-up">
+                Interactive comparison of all 5 algorithms across key classification metrics.
+            </p>
+
+            <div class="chart-controls anim-slide-up">
+                <button class="chart-btn active" data-chart="bar">Bar Chart</button>
+                <button class="chart-btn" data-chart="radar">Radar Chart</button>
+                <button class="chart-btn" data-chart="table">Data Table</button>
+            </div>
+
+            <div class="chart-area anim-slide-up">
+                <div class="chart-container" id="chart-bar"></div>
+                <div class="chart-container hidden" id="chart-radar"></div>
+                <div class="chart-container hidden" id="chart-table"></div>
+            </div>
+
+            <!-- Metrics Legend -->
+            <div class="metrics-legend anim-slide-up">
+                <div class="legend-item"><span class="legend-dot" style="background: var(--cyan)"></span>Accuracy</div>
+                <div class="legend-item"><span class="legend-dot" style="background: var(--violet)"></span>Precision
+                </div>
+                <div class="legend-item"><span class="legend-dot" style="background: var(--pink)"></span>Recall</div>
+                <div class="legend-item"><span class="legend-dot" style="background: var(--green)"></span>F1-Score</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================== KEY FINDINGS ============================== -->
+    <section id="findings" class="section">
+        <div class="container">
+            <h2 class="section-title anim-slide-up">Key Findings & Insights</h2>
+            <p class="section-desc anim-slide-up">
+                What we learned from benchmarking these 5 variational quantum algorithms.
+            </p>
+
+            <div class="findings-grid anim-slide-up">
+                <div class="finding-card finding-best">
+                    <div class="finding-icon">&#9733;</div>
+                    <h3>Best Overall: VQC</h3>
+                    <p>The Variational Quantum Classifier with <strong>StronglyEntanglingLayers</strong> achieves the highest F1-Score (91%) and best accuracy (90%), demonstrating that circuit expressivity is crucial for classification performance.</p>
+                </div>
+                <div class="finding-card finding-tied">
+                    <div class="finding-icon">&#9776;</div>
+                    <h3>QCNN Matches VQC</h3>
+                    <p>The convolutional approach achieves <strong>90% accuracy</strong> with significantly fewer parameters. Its hierarchical structure (inspired by classical CNNs) is well-suited for the spatial patterns in digit images.</p>
+                </div>
+                <div class="finding-card finding-warning">
+                    <div class="finding-icon">&#9888;</div>
+                    <h3>QNN Struggles</h3>
+                    <p>The simplest architecture (BasicEntanglerLayers only) achieves only <strong>52% accuracy</strong> — essentially random guessing. This shows that <strong>circuit depth and design matter significantly</strong>.</p>
+                </div>
+                <div class="finding-card finding-kernel">
+                    <div class="finding-icon">&#9881;</div>
+                    <h3>Kernel vs Variational</h3>
+                    <p>QSVM (kernel-based) reaches <strong>80% accuracy</strong> but is limited by O(n²) kernel computation, requiring only 40 training samples. Variational methods scale better with data.</p>
+                </div>
+                <div class="finding-card finding-recall">
+                    <div class="finding-icon">&#9673;</div>
+                    <h3>Recall vs Precision Trade-off</h3>
+                    <p>QNN and VQFE achieve <strong>near-perfect recall</strong> (95–100%) but low precision, meaning they over-predict class 1. This highlights a common failure mode in underfitting quantum circuits.</p>
+                </div>
+                <div class="finding-card finding-future">
+                    <div class="finding-icon">&#10148;</div>
+                    <h3>Future Directions</h3>
+                    <p>Results suggest that <strong>more expressive circuits</strong> (more layers, diverse gates) and <strong>larger training sets</strong> could further improve performance on NISQ devices as hardware matures.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================== PREDICTIONS ============================== -->
+    <section id="predictions" class="section">
+        <div class="container">
+            <h2 class="section-title anim-slide-up">Prediction Gallery</h2>
+            <p class="section-desc anim-slide-up">
+                Visual results from each algorithm on the MNIST test set. Click any image for a detailed view.
+            </p>
+
+            <div class="gallery-tabs anim-slide-up">
+                <button class="gallery-tab active" data-img="qcnn">QCNN</button>
+                <button class="gallery-tab" data-img="qnn">QNN</button>
+                <button class="gallery-tab" data-img="vqc">VQC</button>
+                <button class="gallery-tab" data-img="vqfe">VQFE</button>
+                <button class="gallery-tab" data-img="qsvm">QSVM</button>
+            </div>
+
+            <div class="gallery-display anim-slide-up">
+                <img id="gallery-img" src="../saved_models/qcnn_predictions.png" alt="QCNN Predictions on Test Set"
+                    loading="lazy">
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================== DEMO ============================== -->
+    <section id="demo" class="section">
+        <div class="container">
+            <h2 class="section-title anim-slide-up">Interactive Demo</h2>
+            <p class="section-desc anim-slide-up">
+                Draw a digit (2 or 7) in the canvas below and see simulated quantum classification results!
+            </p>
+
+            <div class="demo-layout anim-slide-up">
+                <div class="demo-canvas-area">
+                    <div class="canvas-header">
+                        <span>Draw here (2 or 7)</span>
+                        <button id="clear-canvas" class="btn-clear">Clear</button>
+                    </div>
+                    <canvas id="draw-canvas" width="280" height="280"></canvas>
+                    <button id="classify-btn" class="btn-classify">
+                        Classify with Quantum Circuit
+                    </button>
+                </div>
+
+                <div class="demo-result" id="demo-result">
+                    <div class="result-placeholder">
+                        <div class="result-atom">⟨ψ|</div>
+                        <p>Draw a digit and click classify to see results</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================== GLOSSARY ============================== -->
+    <section id="glossary" class="section">
+        <div class="container">
+            <h2 class="section-title anim-slide-up">Quantum Computing Glossary</h2>
+            <p class="section-desc anim-slide-up">
+                Key terms explained — perfect for anyone new to quantum computing and quantum machine learning.
+            </p>
+
+            <div class="glossary-grid anim-slide-up" id="glossary-grid">
+                <div class="glossary-item">
+                    <button class="glossary-term">Qubit
+                        <span class="glossary-toggle">+</span>
+                    </button>
+                    <div class="glossary-def">
+                        <p>The basic unit of quantum information. Unlike a classical bit (0 or 1), a qubit can exist in a <strong>superposition</strong> of both states simultaneously. In this project, we use 4 qubits to encode 4 PCA features.</p>
+                    </div>
+                </div>
+                <div class="glossary-item">
+                    <button class="glossary-term">Superposition
+                        <span class="glossary-toggle">+</span>
+                    </button>
+                    <div class="glossary-def">
+                        <p>A quantum property where a qubit exists in multiple states at once (both 0 and 1). This allows quantum computers to process many possibilities simultaneously, providing potential computational advantages.</p>
+                    </div>
+                </div>
+                <div class="glossary-item">
+                    <button class="glossary-term">Entanglement
+                        <span class="glossary-toggle">+</span>
+                    </button>
+                    <div class="glossary-def">
+                        <p>A quantum phenomenon where two or more qubits become correlated — measuring one instantly determines the state of others. CNOT gates in our circuits create entanglement, enabling complex data relationships.</p>
+                    </div>
+                </div>
+                <div class="glossary-item">
+                    <button class="glossary-term">Variational Circuit
+                        <span class="glossary-toggle">+</span>
+                    </button>
+                    <div class="glossary-def">
+                        <p>A quantum circuit with <strong>trainable parameters</strong> (rotation angles) that are optimized by a classical algorithm. This hybrid approach is designed for today's noisy quantum hardware (NISQ devices).</p>
+                    </div>
+                </div>
+                <div class="glossary-item">
+                    <button class="glossary-term">NISQ
+                        <span class="glossary-toggle">+</span>
+                    </button>
+                    <div class="glossary-def">
+                        <p><strong>Noisy Intermediate-Scale Quantum</strong> — refers to current quantum devices with 50–1000 qubits that suffer from noise and limited coherence times. Variational algorithms are specifically designed to operate within these constraints.</p>
+                    </div>
+                </div>
+                <div class="glossary-item">
+                    <button class="glossary-term">PauliZ Measurement
+                        <span class="glossary-toggle">+</span>
+                    </button>
+                    <div class="glossary-def">
+                        <p>An observable that measures a qubit along the Z-axis of the Bloch sphere. It returns an expectation value between -1 and +1. In our project, values > 0 are classified as digit 7, values ≤ 0 as digit 2.</p>
+                    </div>
+                </div>
+                <div class="glossary-item">
+                    <button class="glossary-term">PCA (Principal Component Analysis)
+                        <span class="glossary-toggle">+</span>
+                    </button>
+                    <div class="glossary-def">
+                        <p>A classical dimensionality reduction technique. It finds the directions of maximum variance in data and projects it onto fewer dimensions. We reduce 784-pixel images to 4 principal components to fit our 4-qubit circuit.</p>
+                    </div>
+                </div>
+                <div class="glossary-item">
+                    <button class="glossary-term">Angle Embedding
+                        <span class="glossary-toggle">+</span>
+                    </button>
+                    <div class="glossary-def">
+                        <p>A method to encode classical data into quantum states by using data values as rotation angles for quantum gates (e.g., RX, RY). Each feature value rotates one qubit, mapping classical information into the quantum Hilbert space.</p>
+                    </div>
+                </div>
+                <div class="glossary-item">
+                    <button class="glossary-term">Quantum Kernel
+                        <span class="glossary-toggle">+</span>
+                    </button>
+                    <div class="glossary-def">
+                        <p>A similarity measure computed using a quantum circuit. The <strong>fidelity kernel</strong> |⟨φ(x₁)|φ(x₂)⟩|² computes the overlap between two quantum states — the more similar the data, the higher the overlap. Used by QSVM.</p>
+                    </div>
+                </div>
+                <div class="glossary-item">
+                    <button class="glossary-term">F1-Score
+                        <span class="glossary-toggle">+</span>
+                    </button>
+                    <div class="glossary-def">
+                        <p>The harmonic mean of Precision and Recall: F1 = 2 × (Precision × Recall) / (Precision + Recall). It provides a single balanced metric, especially useful when classes are imbalanced. Values range from 0 (worst) to 1 (perfect).</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================== DETAILS ============================== -->
+    <section id="details" class="section">
+        <div class="container">
+            <h2 class="section-title anim-slide-up">Technical Details</h2>
+            <p class="section-desc anim-slide-up">
+                Expand each section for in-depth information about the benchmark configuration.
+            </p>
+
+            <div class="accordion anim-slide-up">
+                <div class="accordion-item">
+                    <button class="accordion-header">
+                        <span>Configuration Parameters</span>
+                        <span class="accordion-icon">+</span>
+                    </button>
+                    <div class="accordion-body">
+                        <table class="detail-table">
+                            <tr>
+                                <td>Training Samples</td>
+                                <td>1,000</td>
+                            </tr>
+                            <tr>
+                                <td>Test Samples</td>
+                                <td>250</td>
+                            </tr>
+                            <tr>
+                                <td>Number of Qubits</td>
+                                <td>4</td>
+                            </tr>
+                            <tr>
+                                <td>Training Epochs</td>
+                                <td>20</td>
+                            </tr>
+                            <tr>
+                                <td>Learning Rate</td>
+                                <td>0.1 (Adam)</td>
+                            </tr>
+                            <tr>
+                                <td>Quantum Device</td>
+                                <td>default.qubit (PennyLane)</td>
+                            </tr>
+                            <tr>
+                                <td>QSVM Train Subset</td>
+                                <td>40</td>
+                            </tr>
+                            <tr>
+                                <td>QSVM Test Subset</td>
+                                <td>20</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <button class="accordion-header">
+                        <span>Data Pipeline</span>
+                        <span class="accordion-icon">+</span>
+                    </button>
+                    <div class="accordion-body">
+                        <div class="pipeline-detail">
+                            <div class="pd-step"><strong>1. Load MNIST</strong> — Download via torchvision (28×28
+                                grayscale images)</div>
+                            <div class="pd-step"><strong>2. Filter Digits</strong> — Keep only digits 2 and 7; relabel
+                                to 0/1</div>
+                            <div class="pd-step"><strong>3. Flatten</strong> — Reshape 28×28 → 784-dim vectors</div>
+                            <div class="pd-step"><strong>4. PCA</strong> — Reduce 784 → 4 principal components (~50%
+                                variance)</div>
+                            <div class="pd-step"><strong>5. Normalize</strong> — Scale to [0, π] for quantum angle
+                                encoding</div>
+                            <div class="pd-step"><strong>6. Split</strong> — 1,000 train / 250 test samples</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <button class="accordion-header">
+                        <span>Training Process</span>
+                        <span class="accordion-icon">+</span>
+                    </button>
+                    <div class="accordion-body">
+                        <div class="pipeline-detail">
+                            <div class="pd-step"><strong>Loss Function</strong> — MSE between circuit output and target
+                                (±1)</div>
+                            <div class="pd-step"><strong>Optimizer</strong> — PyTorch Adam (lr=0.1) backpropagating
+                                through quantum circuits</div>
+                            <div class="pd-step"><strong>Target Encoding</strong> — Labels 0→-1, 1→+1 for PauliZ
+                                expectation matching</div>
+                            <div class="pd-step"><strong>Decision Boundary</strong> — Prediction = 1 if circuit output >
+                                0, else 0</div>
+                            <div class="pd-step"><strong>QSVM Exception</strong> — Uses precomputed fidelity kernel
+                                matrix + classical SVC</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <button class="accordion-header">
+                        <span>Dependencies</span>
+                        <span class="accordion-icon">+</span>
+                    </button>
+                    <div class="accordion-body">
+                        <div class="dep-grid">
+                            <div class="dep-item"><code>pennylane</code><span>Quantum circuit framework</span></div>
+                            <div class="dep-item"><code>torch</code><span>Neural network & autograd</span></div>
+                            <div class="dep-item"><code>torchvision</code><span>MNIST dataset loader</span></div>
+                            <div class="dep-item"><code>scikit-learn</code><span>PCA, SVC, metrics</span></div>
+                            <div class="dep-item"><code>numpy</code><span>Numerical operations</span></div>
+                            <div class="dep-item"><code>matplotlib</code><span>Prediction visualization</span></div>
+                            <div class="dep-item"><code>joblib</code><span>QSVM model persistence</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================== FOOTER ============================== -->
+    <footer id="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <span class="logo-icon">⟨ψ|</span>
+                    <span>VQML Benchmark</span>
+                </div>
+                <p class="footer-text">
+                    Variational Quantum Machine Learning — Review Paper Implementation
+                    <br>Binary MNIST Classification on Simulated NISQ Devices
+                </p>
+                <div class="footer-tech">
+                    <span class="tech-badge">PennyLane</span>
+                    <span class="tech-badge">PyTorch</span>
+                    <span class="tech-badge">scikit-learn</span>
+                    <span class="tech-badge">Python</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Lightbox -->
+    <div class="lightbox" id="lightbox">
+        <button class="lightbox-close" id="lightbox-close">✕</button>
+        <img id="lightbox-img" src="" alt="Enlarged prediction view">
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

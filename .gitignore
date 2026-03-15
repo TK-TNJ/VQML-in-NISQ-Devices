@@ -1,0 +1,52 @@
+# ============================================================
+# VQML Benchmark — .gitignore
+# ============================================================
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg-info/
+dist/
+build/
+*.egg
+
+# Virtual Environment
+venv/
+.venv/
+env/
+ENV/
+
+# MNIST Dataset (auto-downloaded)
+data/MNIST/
+data/
+
+# IDE & Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.settings/
+
+# OS Files
+.DS_Store
+Thumbs.db
+Desktop.ini
+ehthumbs.db
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Distribution
+*.whl
+*.tar.gz
+
+# Logs
+*.log
+
+# Environment variables
+.env
+.env.local
