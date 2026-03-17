@@ -63,6 +63,8 @@ VQML/
 │   └── qsvm_predictions.png   # QSVM prediction visualization
 │
 ├── data_utils.py              # Shared utilities (data loading, PCA, metrics)
+├── app.py                     # Flask API backend for real-time interactive demo
+├── requirements.txt           # Project Python dependencies
 ├── qnn.py                     # Quantum Neural Network implementation
 ├── qcnn.py                    # Quantum Convolutional Neural Network implementation
 ├── vqc.py                     # Variational Quantum Classifier implementation
@@ -142,13 +144,7 @@ source venv/bin/activate
 ### 3. Install Dependencies
 
 ```bash
-pip install pennylane torch torchvision scikit-learn numpy matplotlib joblib
-```
-
-Or install all at once:
-
-```bash
-pip install pennylane torch torchvision scikit-learn numpy matplotlib joblib
+pip install -r requirements.txt
 ```
 
 ### 4. Verify Installation
@@ -252,7 +248,19 @@ The project includes an interactive web dashboard for exploring results.
 
 ### Launching the Dashboard
 
-Simply open `frontend/index.html` in any modern web browser:
+To fully use the dashboard (including the authentic interactive "Draw-a-Digit" demo), you must run both the backend API and the frontend.
+
+#### 1. Start the Backend API
+The backend serves the trained quantum models via a local Flask server.
+
+```bash
+# In your activated virtual environment
+python app.py
+```
+*Wait until you see `[OK] Backend is ready to accept predictions!`*
+
+#### 2. Start the Frontend
+Open another terminal or just open the file directly:
 
 ```bash
 # Option 1: Direct file open
@@ -339,6 +347,8 @@ QSVM-specific settings in `qsvm.py`:
 | `numpy` | Numerical operations |
 | `matplotlib` | Prediction visualization plots |
 | `joblib` | QSVM model serialization |
+| `flask` & `flask-cors` | Backend API for the interactive demo |
+| `pillow` | Image preprocessing for the canvas drawing |
 
 ---
 

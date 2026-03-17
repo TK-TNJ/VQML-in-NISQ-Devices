@@ -837,130 +837,49 @@ function renderDataTable() {
                 </div>
             </div>`;
 
-        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-        const pixels = imageData.data;
-        const W = canvas.width, H = canvas.height;
+        const imageDataUrl = canvas.toDataURL('image/png');
 
-        // Collect dark stroke pixels (drawn ink is dark on white background)
-        let topHalf = 0, bottomHalf = 0;
-        let leftHalf = 0, rightHalf = 0;
-        let topQuarter = 0, bottomQuarter = 0;
-        let midSection = 0;
-        let totalInk = 0;
+        // Call the Flask backend instead of heuristic counting
+        fetch('http://127.0.0.1:5000/predict', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ image: imageDataUrl })
+        })
+        .then(response => {
+            if (!response.ok) throw new Error('Network response was not ok');
+            return response.json();
+        })
+        .then(data => {
+            if (data.error) throw new Error(data.error);
 
-        // Per-row ink counts for horizontal stroke detection
-        const rowInk = new Array(H).fill(0);
-        // Per-column ink counts
-        const colInk = new Array(W).fill(0);
+            const predicted = data.consensus;
+            const algoResults = data.algorithms;
 
-        for (let y = 0; y < H; y++) {
-            for (let x = 0; x < W; x++) {
-                const idx = (y * W + x) * 4;
-                const brightness = pixels[idx]; // R channel
-                // Detect DARK pixels (drawn strokes) — brightness < 100
-                if (brightness < 100) {
-                    totalInk++;
-                    rowInk[y]++;
-                    colInk[x]++;
-
-                    if (y < H / 2) topHalf++;
-                    else bottomHalf++;
-                    if (y < H / 4) topQuarter++;
-                    if (y > H * 0.75) bottomQuarter++;
-                    if (x < W / 2) leftHalf++;
-                    else rightHalf++;
-                    if (y > H * 0.35 && y < H * 0.65) midSection++;
-                }
-            }
-        }
-
-        // Feature: ratio of ink in top half vs total
-        const topRatio = topHalf / (totalInk + 1);
-        // Feature: ratio of ink in bottom quarter (base of digit 2)
-        const bottomQRatio = bottomQuarter / (totalInk + 1);
-        // Feature: ratio of ink in top quarter (top bar of 7)
-        const topQRatio = topQuarter / (totalInk + 1);
-        // Feature: horizontal spread of ink in bottom rows (digit 2 has wide bottom base)
-        let bottomRowMaxWidth = 0;
-        for (let y = Math.floor(H * 0.7); y < H; y++) {
-            let minX = W, maxX = 0;
-            for (let x = 0; x < W; x++) {
-                const idx = (y * W + x) * 4;
-                if (pixels[idx] < 100) {
-                    minX = Math.min(minX, x);
-                    maxX = Math.max(maxX, x);
-                }
-            }
-            if (maxX > minX) bottomRowMaxWidth = Math.max(bottomRowMaxWidth, maxX - minX);
-        }
-        const bottomWidthRatio = bottomRowMaxWidth / W;
-        // Feature: vertical distribution — 7 tends to be top-heavy with diagonal
-        const verticalBalance = topHalf / (bottomHalf + 1);
-
-        let predicted;
-        let confidence;
-
-        // Heuristic decision:
-        // Digit 7: strong horizontal bar at top + diagonal stroke, top-heavy
-        // Digit 2: curved top, horizontal base at bottom, more balanced vertically
-        let score7 = 0;
-
-        // 7 is top-heavy (more ink in top half)
-        if (verticalBalance > 1.2) score7 += 2;
-        else if (verticalBalance > 0.9) score7 += 1;
-        else score7 -= 1;
-
-        // 7 has NO wide bottom base; 2 has a wide horizontal bottom stroke
-        if (bottomWidthRatio > 0.4) score7 -= 2;
-        else score7 += 1;
-
-        // 7 has strong top quarter presence
-        if (topQRatio > 0.3) score7 += 1;
-
-        // 2 has significant bottom quarter ink (the base)
-        if (bottomQRatio > 0.2) score7 -= 1;
-
-        // If mostly in top half with little bottom activity → likely 7
-        if (topRatio > 0.6 && bottomQRatio < 0.15) score7 += 2;
-
-        if (score7 >= 2) {
-            predicted = 7;
-            confidence = 0.65 + Math.min(score7 * 0.06, 0.25) + Math.random() * 0.08;
-        } else if (score7 <= -1) {
-            predicted = 2;
-            confidence = 0.65 + Math.min(Math.abs(score7) * 0.06, 0.25) + Math.random() * 0.08;
-        } else {
-            predicted = score7 > 0 ? 7 : 2;
-            confidence = 0.5 + Math.random() * 0.15;
-        }
-
-        const otherConfidence = 1 - confidence;
-        const digit2Conf = predicted === 2 ? confidence : otherConfidence;
-        const digit7Conf = predicted === 7 ? confidence : otherConfidence;
-
-        const algoResults = Object.entries(ALGO_DATA).map(([key, algo]) => {
-            const noise = (Math.random() - 0.5) * 0.15;
-            const conf = Math.min(0.99, Math.max(0.3, confidence + noise));
-            return {
-                name: algo.name,
-                confidence: conf,
-                predicted: conf > 0.5 ? predicted : (predicted === 2 ? 7 : 2)
-            };
-        });
-
-        setTimeout(() => {
             const gradient = predicted === 2
                 ? 'linear-gradient(135deg, #5b7fa6, #8e7ab5)'
                 : 'linear-gradient(135deg, #c47a8e, #c9a95a)';
 
             let barsHtml = '';
+            
+            // Map the exact algorithm names to frontend representations
+            const uiAlgos = {
+                'QNN': 'Quantum Neural Network',
+                'QCNN': 'Quantum Convolutional Neural Network',
+                'VQC': 'Variational Quantum Classifier',
+                'VQFE': 'Variational Quantum Feature Embedding',
+                'QSVM': 'Quantum Support Vector Machine'
+            };
+
             algoResults.forEach(r => {
                 const color = r.confidence > 0.7 ? 'var(--green)' :
                               r.confidence > 0.5 ? 'var(--yellow)' : 'var(--pink)';
+                              
+                const uiName = uiAlgos[r.name] ? r.name : r.name;
+                
                 barsHtml += `
                     <div class="result-bar-item">
                         <div class="result-bar-label">
-                            <span>${r.name} → Digit ${r.predicted}</span>
+                            <span>${uiName} → Digit ${r.predicted}</span>
                             <span>${(r.confidence * 100).toFixed(1)}%</span>
                         </div>
                         <div class="result-bar-track">
@@ -970,12 +889,12 @@ function renderDataTable() {
             });
 
             resultArea.innerHTML = `
-                <div class="classification-result">
+                <div class="classification-result" style="animation: fadeIn 0.4s ease forwards;">
                     <div class="result-header">
                         <div class="result-digit" style="background: ${gradient}; -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
                             ${predicted}
                         </div>
-                        <div class="result-label">Predicted: Digit ${predicted}</div>
+                        <div class="result-label">Consensus Predicted: Digit ${predicted}</div>
                     </div>
                     <div class="result-bars">${barsHtml}</div>
                 </div>`;
@@ -988,7 +907,15 @@ function renderDataTable() {
                     });
                 }, 50);
             });
-        }, 1800);
+        })
+        .catch(error => {
+            console.error('Error fetching prediction:', error);
+            resultArea.innerHTML = `
+                <div class="result-placeholder">
+                    <div class="result-atom" style="color: var(--pink)">⚠</div>
+                    <p style="color: var(--pink)">Backend Error: Make sure app.py is running on port 5000!</p>
+                </div>`;
+        });
     });
 })();
 

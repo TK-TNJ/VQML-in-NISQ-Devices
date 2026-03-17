@@ -1,0 +1,10 @@
+pennylane
+torch
+torchvision
+scikit-learn
+numpy
+matplotlib
+joblib
+flask
+flask-cors
+pillow
