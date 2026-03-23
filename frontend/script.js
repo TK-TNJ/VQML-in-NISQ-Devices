@@ -15,10 +15,10 @@ const ALGO_DATA = {
 
 const METRICS = ['accuracy', 'precision', 'recall', 'f1'];
 const METRIC_COLORS = {
-    accuracy:  '#5b7fa6',
-    precision: '#8e7ab5',
-    recall:    '#c47a8e',
-    f1:        '#6aab8e'
+    accuracy:  '#4a7fad',
+    precision: '#7e6aaf',
+    recall:    '#c06a80',
+    f1:        '#55a07e'
 };
 const METRIC_LABELS = {
     accuracy: 'Accuracy',
@@ -50,8 +50,8 @@ const METRIC_LABELS = {
             this.vx = (Math.random() - 0.5) * 0.5;
             this.vy = (Math.random() - 0.5) * 0.5;
             this.r = Math.random() * 2 + 0.5;
-            this.hue = Math.random() > 0.5 ? 215 : 260;
-            this.alpha = Math.random() * 0.2 + 0.08;
+            this.hue = Math.random() > 0.5 ? 210 : 255;
+            this.alpha = Math.random() * 0.15 + 0.06;
         }
         update() {
             this.x += this.vx;
@@ -97,7 +97,7 @@ const METRIC_LABELS = {
                     ctx.beginPath();
                     ctx.moveTo(particles[i].x, particles[i].y);
                     ctx.lineTo(particles[j].x, particles[j].y);
-                    ctx.strokeStyle = `hsla(215, 25%, 55%, ${alpha})`;
+                    ctx.strokeStyle = `hsla(210, 30%, 50%, ${alpha})`;
                     ctx.lineWidth = 0.5;
                     ctx.stroke();
                 }
@@ -234,13 +234,13 @@ const METRIC_LABELS = {
     };
 
     const gateColors = {
-        angle:     { fill: '#5b7fa618', stroke: '#5b7fa6', text: '#5b7fa6' },
-        entangle:  { fill: '#8e7ab518', stroke: '#8e7ab5', text: '#8e7ab5' },
-        strong:    { fill: '#c47a8e18', stroke: '#c47a8e', text: '#c47a8e' },
-        conv:      { fill: '#c9a95a18', stroke: '#c9a95a', text: '#c9a95a' },
-        pool:      { fill: '#6aab8e18', stroke: '#6aab8e', text: '#6aab8e' },
-        trainable: { fill: '#c47a8e18', stroke: '#c47a8e', text: '#c47a8e' },
-        adjoint:   { fill: '#8e7ab518', stroke: '#8e7ab5', text: '#8e7ab5' },
+        angle:     { fill: '#4a7fad18', stroke: '#4a7fad', text: '#4a7fad' },
+        entangle:  { fill: '#7e6aaf18', stroke: '#7e6aaf', text: '#7e6aaf' },
+        strong:    { fill: '#c06a8018', stroke: '#c06a80', text: '#c06a80' },
+        conv:      { fill: '#c5a04a18', stroke: '#c5a04a', text: '#c5a04a' },
+        pool:      { fill: '#55a07e18', stroke: '#55a07e', text: '#55a07e' },
+        trainable: { fill: '#c06a8018', stroke: '#c06a80', text: '#c06a80' },
+        adjoint:   { fill: '#7e6aaf18', stroke: '#7e6aaf', text: '#7e6aaf' },
     };
 
     Object.entries(circuits).forEach(([key, circ]) => {
@@ -566,11 +566,11 @@ function renderRadarChart() {
     });
 
     const algoColors = {
-        qnn:  { stroke: '#c47a8e', fill: '#c47a8e20' },
-        qcnn: { stroke: '#5b7fa6', fill: '#5b7fa618' },
-        vqc:  { stroke: '#8e7ab5', fill: '#8e7ab518' },
-        vqfe: { stroke: '#c9a95a', fill: '#c9a95a18' },
-        qsvm: { stroke: '#6aab8e', fill: '#6aab8e18' },
+        qnn:  { stroke: '#c06a80', fill: '#c06a8020' },
+        qcnn: { stroke: '#4a7fad', fill: '#4a7fad18' },
+        vqc:  { stroke: '#7e6aaf', fill: '#7e6aaf18' },
+        vqfe: { stroke: '#c5a04a', fill: '#c5a04a18' },
+        qsvm: { stroke: '#55a07e', fill: '#55a07e18' },
     };
 
     Object.entries(ALGO_DATA).forEach(([key, algo]) => {
@@ -742,7 +742,7 @@ function renderDataTable() {
 
 
 // ============================================================
-// DRAW-A-DIGIT DEMO
+// DRAW-A-DIGIT DEMO (SSE Streaming + Algorithm Selector)
 // ============================================================
 (function initDemoCanvas() {
     const canvas = document.getElementById('draw-canvas');
@@ -751,14 +751,26 @@ function renderDataTable() {
     const clearBtn = document.getElementById('clear-canvas');
     const classifyBtn = document.getElementById('classify-btn');
     const resultArea = document.getElementById('demo-result');
+    const pipelineViz = document.getElementById('pipeline-viz');
+    const evalMetrics = document.getElementById('eval-metrics');
+    const algoSelector = document.getElementById('algo-selector');
+    const algoSelectBtns = document.querySelectorAll('.algo-select-btn');
 
     let drawing = false;
     let hasDrawn = false;
+    let lastResults = null;       // Cache last inference results for tab switching
+    let selectedAlgo = 'all';     // Current selected algorithm tab
 
+    // ---- Canvas Drawing ----
     function clearCanvas() {
         ctx.fillStyle = '#ffffff';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         hasDrawn = false;
+        lastResults = null;
+        selectedAlgo = 'all';
+        algoSelectBtns.forEach(b => b.classList.toggle('active', b.dataset.algo === 'all'));
+        pipelineViz.innerHTML = '';
+        evalMetrics.innerHTML = '';
         resultArea.innerHTML = `
             <div class="result-placeholder">
                 <div class="result-atom">⟨ψ|</div>
@@ -819,6 +831,180 @@ function renderDataTable() {
 
     clearBtn.addEventListener('click', clearCanvas);
 
+    // ---- Algorithm Selector ----
+    const algoFullNames = {
+        'QNN': 'Quantum Neural Network',
+        'QCNN': 'Quantum Convolutional Neural Network',
+        'VQC': 'Variational Quantum Classifier',
+        'VQFE': 'Variational Quantum Feature Embedding',
+        'QSVM': 'Quantum Support Vector Machine'
+    };
+
+    const algoColors = {
+        'qnn': '#c06a80', 'qcnn': '#4a7fad', 'vqc': '#7e6aaf',
+        'vqfe': '#c5a04a', 'qsvm': '#55a07e'
+    };
+
+    algoSelectBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            algoSelectBtns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            selectedAlgo = btn.dataset.algo;
+            if (lastResults) {
+                renderResultsForSelection(lastResults);
+            }
+        });
+    });
+
+    // ---- Render Results Based on Selection ----
+    function renderResultsForSelection(data) {
+        const algoResults = data.algorithms;
+        const consensus = data.consensus;
+
+        if (selectedAlgo === 'all') {
+            renderAllResults(algoResults, consensus);
+            evalMetrics.innerHTML = '';
+        } else {
+            const algoKey = selectedAlgo;
+            const algoName = algoKey.toUpperCase();
+            const match = algoResults.find(r => r.name === algoName);
+            if (match) {
+                renderSingleAlgoResult(match);
+                renderEvalMetrics(algoKey);
+            } else {
+                resultArea.innerHTML = `
+                    <div class="result-placeholder">
+                        <div class="result-atom" style="color: var(--pink)">✗</div>
+                        <p style="color: var(--pink)">${algoName} model not available</p>
+                    </div>`;
+                evalMetrics.innerHTML = '';
+            }
+        }
+    }
+
+    function renderAllResults(algoResults, consensus) {
+        const gradient = consensus === 2
+            ? 'linear-gradient(135deg, #5b7fa6, #8e7ab5)'
+            : 'linear-gradient(135deg, #c47a8e, #c9a95a)';
+
+        let barsHtml = '';
+        algoResults.forEach(r => {
+            const color = r.confidence > 0.7 ? 'var(--green)' :
+                          r.confidence > 0.5 ? 'var(--yellow)' : 'var(--pink)';
+            barsHtml += `
+                <div class="result-bar-item">
+                    <div class="result-bar-label">
+                        <span>${r.name} → Digit ${r.predicted}</span>
+                        <span>${(r.confidence * 100).toFixed(1)}%</span>
+                    </div>
+                    <div class="result-bar-track">
+                        <div class="result-bar-fill" style="width: 0%; background: ${color};"></div>
+                    </div>
+                </div>`;
+        });
+
+        resultArea.innerHTML = `
+            <div class="classification-result" style="animation: fadeIn 0.4s ease forwards;">
+                <div class="result-header">
+                    <div class="result-digit" style="background: ${gradient}; -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
+                        ${consensus}
+                    </div>
+                    <div class="result-label">Consensus Predicted: Digit ${consensus}</div>
+                </div>
+                <div class="result-bars">${barsHtml}</div>
+            </div>`;
+
+        requestAnimationFrame(() => {
+            setTimeout(() => {
+                const fills = resultArea.querySelectorAll('.result-bar-fill');
+                fills.forEach((fill, i) => {
+                    fill.style.width = (algoResults[i].confidence * 100) + '%';
+                });
+            }, 50);
+        });
+    }
+
+    function renderSingleAlgoResult(r) {
+        const color = algoColors[r.name.toLowerCase()] || '#5b7fa6';
+        const confColor = r.confidence > 0.7 ? 'var(--green)' :
+                          r.confidence > 0.5 ? 'var(--yellow)' : 'var(--pink)';
+        const fullName = algoFullNames[r.name] || r.name;
+
+        resultArea.innerHTML = `
+            <div class="classification-result single-algo-result" style="animation: fadeIn 0.4s ease forwards;">
+                <div class="single-algo-header">
+                    <span class="single-algo-tag" style="color: ${color}; border-color: ${color}40">${r.name}</span>
+                    <span class="single-algo-fullname">${fullName}</span>
+                </div>
+                <div class="result-header">
+                    <div class="result-digit" style="color: ${color};">
+                        ${r.predicted}
+                    </div>
+                    <div class="result-label">Predicted: Digit ${r.predicted}</div>
+                </div>
+                <div class="result-bars">
+                    <div class="result-bar-item">
+                        <div class="result-bar-label">
+                            <span>Confidence</span>
+                            <span>${(r.confidence * 100).toFixed(1)}%</span>
+                        </div>
+                        <div class="result-bar-track">
+                            <div class="result-bar-fill" style="width: 0%; background: ${confColor};"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>`;
+
+        requestAnimationFrame(() => {
+            setTimeout(() => {
+                const fill = resultArea.querySelector('.result-bar-fill');
+                if (fill) fill.style.width = (r.confidence * 100) + '%';
+            }, 50);
+        });
+    }
+
+    function renderEvalMetrics(algoKey) {
+        // Use live metrics from backend if available, fall back to ALGO_DATA
+        const backendMetrics = lastResults && lastResults.metrics ? lastResults.metrics[algoKey] : null;
+        const data = backendMetrics || ALGO_DATA[algoKey];
+        if (!data) {
+            evalMetrics.innerHTML = '';
+            return;
+        }
+        const circumference = 2 * Math.PI * 32;
+        const isLive = !!backendMetrics;
+
+        const metricItems = [
+            { key: 'accuracy', label: 'Accuracy', color: '#4a7fad' },
+            { key: 'precision', label: 'Precision', color: '#7e6aaf' },
+            { key: 'recall', label: 'Recall', color: '#c06a80' },
+            { key: 'f1', label: 'F1-Score', color: '#55a07e' }
+        ];
+
+        let html = `<div class="eval-metrics-title">Benchmark Evaluation${isLive ? ' <span style="font-size:0.6rem;color:var(--green)">● LIVE</span>' : ''}</div><div class="eval-metrics-grid">`;
+        metricItems.forEach(m => {
+            const val = data[m.key];
+            const pct = (val * 100).toFixed(1);
+            const offset = circumference - (val * circumference);
+            html += `
+                <div class="eval-metric-card" style="--metric-color: ${m.color}">
+                    <div class="eval-ring-wrap">
+                        <svg viewBox="0 0 72 72" class="eval-ring-svg">
+                            <circle cx="36" cy="36" r="32" class="eval-ring-bg" />
+                            <circle cx="36" cy="36" r="32" class="eval-ring-fg"
+                                    style="stroke: ${m.color}; stroke-dasharray: ${circumference}; stroke-dashoffset: ${offset};" />
+                        </svg>
+                        <div class="eval-ring-value">${pct}%</div>
+                    </div>
+                    <div class="eval-metric-label">${m.label}</div>
+                </div>`;
+        });
+        html += '</div>';
+
+        evalMetrics.innerHTML = html;
+    }
+
+    // ---- SSE Streaming Classification ----
     classifyBtn.addEventListener('click', () => {
         if (!hasDrawn) {
             resultArea.innerHTML = `
@@ -829,6 +1015,12 @@ function renderDataTable() {
             return;
         }
 
+        // Reset UI
+        lastResults = null;
+        selectedAlgo = 'all';
+        algoSelectBtns.forEach(b => b.classList.toggle('active', b.dataset.algo === 'all'));
+        pipelineViz.innerHTML = '';
+        evalMetrics.innerHTML = '';
         resultArea.innerHTML = `
             <div class="processing">
                 <p class="processing-text">Running quantum circuit simulation...</p>
@@ -839,7 +1031,121 @@ function renderDataTable() {
 
         const imageDataUrl = canvas.toDataURL('image/png');
 
-        // Call the Flask backend instead of heuristic counting
+        // Use fetch with ReadableStream for SSE (since EventSource only supports GET)
+        fetch('http://127.0.0.1:5000/predict-stream', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ image: imageDataUrl })
+        })
+        .then(response => {
+            if (!response.ok) throw new Error('Network response was not ok');
+            const reader = response.body.getReader();
+            const decoder = new TextDecoder();
+            let buffer = '';
+            const accumulatedResults = [];
+
+            function processStream() {
+                return reader.read().then(({ done, value }) => {
+                    if (done) return;
+
+                    buffer += decoder.decode(value, { stream: true });
+
+                    // Parse SSE events from the buffer
+                    const events = buffer.split('\n\n');
+                    buffer = events.pop(); // Keep incomplete last event in buffer
+
+                    events.forEach(eventStr => {
+                        if (!eventStr.trim()) return;
+                        const lines = eventStr.trim().split('\n');
+                        let eventType = '';
+                        let eventData = '';
+
+                        lines.forEach(line => {
+                            if (line.startsWith('event: ')) {
+                                eventType = line.substring(7);
+                            } else if (line.startsWith('data: ')) {
+                                eventData = line.substring(6);
+                            }
+                        });
+
+                        if (!eventType || !eventData) return;
+
+                        try {
+                            const parsed = JSON.parse(eventData);
+                            handleSSEEvent(eventType, parsed, accumulatedResults);
+                        } catch (e) {
+                            console.warn('Failed to parse SSE event:', e);
+                        }
+                    });
+
+                    return processStream();
+                });
+            }
+
+            return processStream();
+        })
+        .catch(error => {
+            console.error('SSE stream error, falling back to /predict:', error);
+            // Fallback to the original /predict endpoint
+            fallbackPredict(imageDataUrl);
+        });
+    });
+
+    function handleSSEEvent(type, data, accResults) {
+        switch (type) {
+            case 'step':
+                addPipelineStep(data);
+                break;
+
+            case 'result':
+                accResults.push(data);
+                // Update the processing text to show progress
+                resultArea.innerHTML = `
+                    <div class="processing">
+                        <p class="processing-text">Processed ${accResults.length}/5 algorithms...</p>
+                        <div class="processing-dots">
+                            <span></span><span></span><span></span><span></span>
+                        </div>
+                        <div class="streaming-results">
+                            ${accResults.map(r => `
+                                <div class="stream-result-chip" style="animation: fadeIn 0.3s ease forwards;">
+                                    <span class="chip-name" style="color: ${algoColors[r.name.toLowerCase()] || '#fff'}">${r.name}</span>
+                                    <span class="chip-pred">→ ${r.predicted}</span>
+                                    <span class="chip-conf">${(r.confidence * 100).toFixed(0)}%</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>`;
+                break;
+
+            case 'done':
+                lastResults = data;
+                renderResultsForSelection(data);
+                break;
+
+            case 'error':
+                resultArea.innerHTML = `
+                    <div class="result-placeholder">
+                        <div class="result-atom" style="color: var(--pink)">⚠</div>
+                        <p style="color: var(--pink)">Error: ${data.error}</p>
+                    </div>`;
+                break;
+        }
+    }
+
+    function addPipelineStep(data) {
+        const step = document.createElement('div');
+        step.className = 'pipeline-step';
+        step.innerHTML = `
+            <img src="${data.image}" alt="${data.label}" />
+            <span class="pipeline-step-label">${data.label}</span>`;
+        pipelineViz.appendChild(step);
+        // Scroll to show latest step
+        pipelineViz.scrollLeft = pipelineViz.scrollWidth;
+    }
+
+    // ---- Fallback to original /predict endpoint ----
+    function fallbackPredict(imageDataUrl) {
         fetch('http://127.0.0.1:5000/predict', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -851,62 +1157,8 @@ function renderDataTable() {
         })
         .then(data => {
             if (data.error) throw new Error(data.error);
-
-            const predicted = data.consensus;
-            const algoResults = data.algorithms;
-
-            const gradient = predicted === 2
-                ? 'linear-gradient(135deg, #5b7fa6, #8e7ab5)'
-                : 'linear-gradient(135deg, #c47a8e, #c9a95a)';
-
-            let barsHtml = '';
-            
-            // Map the exact algorithm names to frontend representations
-            const uiAlgos = {
-                'QNN': 'Quantum Neural Network',
-                'QCNN': 'Quantum Convolutional Neural Network',
-                'VQC': 'Variational Quantum Classifier',
-                'VQFE': 'Variational Quantum Feature Embedding',
-                'QSVM': 'Quantum Support Vector Machine'
-            };
-
-            algoResults.forEach(r => {
-                const color = r.confidence > 0.7 ? 'var(--green)' :
-                              r.confidence > 0.5 ? 'var(--yellow)' : 'var(--pink)';
-                              
-                const uiName = uiAlgos[r.name] ? r.name : r.name;
-                
-                barsHtml += `
-                    <div class="result-bar-item">
-                        <div class="result-bar-label">
-                            <span>${uiName} → Digit ${r.predicted}</span>
-                            <span>${(r.confidence * 100).toFixed(1)}%</span>
-                        </div>
-                        <div class="result-bar-track">
-                            <div class="result-bar-fill" style="width: 0%; background: ${color};"></div>
-                        </div>
-                    </div>`;
-            });
-
-            resultArea.innerHTML = `
-                <div class="classification-result" style="animation: fadeIn 0.4s ease forwards;">
-                    <div class="result-header">
-                        <div class="result-digit" style="background: ${gradient}; -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
-                            ${predicted}
-                        </div>
-                        <div class="result-label">Consensus Predicted: Digit ${predicted}</div>
-                    </div>
-                    <div class="result-bars">${barsHtml}</div>
-                </div>`;
-
-            requestAnimationFrame(() => {
-                setTimeout(() => {
-                    const fills = resultArea.querySelectorAll('.result-bar-fill');
-                    fills.forEach((fill, i) => {
-                        fill.style.width = (algoResults[i].confidence * 100) + '%';
-                    });
-                }, 50);
-            });
+            lastResults = data;
+            renderResultsForSelection(data);
         })
         .catch(error => {
             console.error('Error fetching prediction:', error);
@@ -916,8 +1168,11 @@ function renderDataTable() {
                     <p style="color: var(--pink)">Backend Error: Make sure app.py is running on port 5000!</p>
                 </div>`;
         });
-    });
+    }
 })();
+
+
+
 
 
 // ============================================================
